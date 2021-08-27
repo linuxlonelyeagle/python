@@ -1,26 +1,24 @@
 import pandas as pd
-LogInfo = pd.read_csv('Training_LogInfo.csv')
-Userupdata = pd.read_csv('Training_Userupdate.csv')
-data1 = LogInfo.groupby(LogInfo['Idx'])
-data2 = Userupdata.groupby(Userupdata['Idx'])
-data1.agg({'LogInfo3':pd.to_datetime})
-data2.agg({'UserupdateInfo2':pd.to_datetime})
-print('最早时间',data1['LogInfo3'].min())
-print('最晚时间',data1['LogInfo3'].max())
-print('最早时间',data2['UserupdateInfo2'].min())
-print('最晚时间',data2['UserupdateInfo2'].max())
-print('登陆次数',data1.size())   
-print('更新次数',data2.size())
+import numpy as np
+model = pd.read_excel("./model.xls")
+
+# 定义标准差标准化函数
+def standardscaler(data):
+    data = (data-data.mean())/data.std()
+    return data
+#自定义离差 标准化函数
+def MINMAXScale(data):
+    data = (data - data.min()) / (data.max() - data.min())
+    return data
+#自定义小数定标标准化函数
+def Decimalscaler(data):
+    data  = data/10**np.ceol(np.log10(data.abs().max()))
+    return data
 
 
-
-
-
-
-
-
-
-
-
-
-
+data1 = standardscaler(model['线损指标'])
+print(data1)
+data2 = standardscaler(model[' 告警类指标  '])
+print(data2)
+data3 = standardscaler(model['是否窃漏电'])
+print(data3)
